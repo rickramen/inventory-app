@@ -1,0 +1,35 @@
+<%- include("../partials/header") %>
+
+<h2>All Pokémon</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Trainer</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (!pokemon || pokemon.length === 0) { %>
+      <tr>
+        <td colspan="4">No Pokémon found.</td>
+      </tr>
+    <% } else { %>
+      <% pokemon.forEach(p => { %>
+        <tr>
+          <td><%= p.name %></td>
+          <td><%= p.type %></td>
+          <td><%= p.trainer %></td>
+          <td>
+            <!-- Placeholder detail/edit/delete -->
+            View | Edit | Delete
+          </td>
+        </tr>
+      <% }) %>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include("../partials/footer") %>
