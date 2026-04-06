@@ -1,12 +1,4 @@
 # inventory-app
 
-
-Tables:
-- Pokemon (belongs to type, belongs to trainer)
-- Type (has many pokemon)
-- Trainer (has many pokemon)
-
-Clean wipe containers <br>
-``
-docker compose down --rmi all --volumes --remove-orphans
-``
+## The Odin Project - NodeJS Course Project 
+A CRUD application built with Express, NodeJS, EJS, and PostgreSQL database.

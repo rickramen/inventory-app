@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const pool = require('./pool');
 
-// Drop tables (reset)
+// !!! Drop tables (reset) !!!
 const DROP_TABLES_SQL = `
 DROP TABLE IF EXISTS pokemon, trainers, types CASCADE;
 `;
@@ -22,54 +22,79 @@ CREATE TABLE pokemon (
   id SERIAL PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
   type_id INT REFERENCES types(id) ON DELETE SET NULL,
-  trainer_id INT REFERENCES trainers(id) ON DELETE SET NULL
+  trainer_id INT REFERENCES trainers(id) ON DELETE SET NULL,
+  image_url TEXT
 );
 `;
 
-// Seed data
-const INSERT_TYPES_SQL = `
-INSERT INTO types (name) VALUES
-  ('Fire'), ('Water'), ('Grass'), ('Electric');
-`;
-
+// Populate trainers
 const INSERT_TRAINERS_SQL = `
 INSERT INTO trainers (name) VALUES
-  ('Ash'), ('Misty'), ('Brock');
+  ('Ash'), ('Misty'), ('Brock'),
+  ('May'), ('Dawn'), ('Cynthia')
 `;
 
-const INSERT_POKEMON_SQL = `
-INSERT INTO pokemon (name, type_id, trainer_id)
-SELECT 
-  p.name,
-  t.id,
-  tr.id
-FROM (
-  VALUES
-    ('Charmander', 'Fire', 'Ash'),
-    ('Squirtle', 'Water', 'Ash'),
-    ('Bulbasaur', 'Grass', 'Ash'),
-    ('Pikachu', 'Electric', 'Ash')
-) AS p(name, type_name, trainer_name)
-JOIN types t ON t.name = p.type_name
-JOIN trainers tr ON tr.name = p.trainer_name;
-`;
-
-// Functions
-async function dropTables(client) {
-  await client.query(DROP_TABLES_SQL);
-  console.log("Tables dropped.");
+// Helpers
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-async function createTables(client) {
-  await client.query(CREATE_TABLES_SQL);
-  console.log("Tables created.");
+async function fetchPokemon(name) {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  const data = await res.json();
+
+  return {
+    name: capitalize(data.name),
+    type: capitalize(data.types[0].type.name),
+    image: data.sprites.front_default
+  };
 }
 
+async function insertPokemon(client, pokemon, trainerName) {
+  // Insert new type (or assigns if already exists)
+  const typeResult = await client.query(
+    `INSERT INTO types (name)
+     VALUES ($1)
+     ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+     RETURNING id`,
+    [pokemon.type]
+  );
+
+  const trainerResult = await client.query(
+    'SELECT id FROM trainers WHERE name = $1',
+    [trainerName]
+  );
+
+  const typeId = typeResult.rows[0].id;
+  const trainerId = trainerResult.rows[0]?.id;
+
+  await client.query(
+    `INSERT INTO pokemon (name, type_id, trainer_id, image_url)
+     VALUES ($1, $2, $3, $4)`,
+    [pokemon.name, typeId, trainerId, pokemon.image]
+  );
+}
+
+// Seed Pokémon using API
 async function seedData(client) {
-  await client.query(INSERT_TYPES_SQL);
   await client.query(INSERT_TRAINERS_SQL);
-  await client.query(INSERT_POKEMON_SQL);
-  console.log("Data seeded.");
+
+  const pokemonList = [
+    { name: 'pikachu', trainer: 'Ash' },
+    { name: 'gyarados', trainer: 'Misty' },
+    { name: 'steelix', trainer: 'Brock' },
+    { name: 'blaziken', trainer: 'May' },
+    { name: 'piplup', trainer: 'Dawn' },
+    { name: 'garchomp', trainer: 'Cynthia' }
+  ];
+
+  for (const p of pokemonList) {
+    const data = await fetchPokemon(p.name);
+    await insertPokemon(client, data, p.trainer);
+    console.log(`Inserted ${data.name}`);
+  }
+
+  console.log("Data seeded with PokéAPI.");
 }
 
 async function main() {
@@ -80,8 +105,12 @@ async function main() {
   try {
     await client.query("BEGIN");
 
-    await dropTables(client);
-    await createTables(client);
+    await client.query(DROP_TABLES_SQL);
+    console.log("Tables dropped.");
+
+    await client.query(CREATE_TABLES_SQL);
+    console.log("Tables created.");
+
     await seedData(client);
 
     await client.query("COMMIT");
