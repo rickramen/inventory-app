@@ -21,7 +21,7 @@ CREATE TABLE trainers (
 CREATE TABLE pokemon (
   id SERIAL PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
-  type_id INT REFERENCES types(id) ON DELETE SET NULL,
+  type_id INT NOT NULL REFERENCES types(id) ON DELETE RESTRICT,
   trainer_id INT REFERENCES trainers(id) ON DELETE SET NULL,
   image_url TEXT
 );

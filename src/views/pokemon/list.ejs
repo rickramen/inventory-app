@@ -24,7 +24,9 @@
               <img src="<%= p.image_url %>" width="50">
             <% } %>
           </td>
-          <td><%= p.name %></td>
+          <td>
+            <a href="/pokemon/<%= p.id %>"><%= p.name %></a>
+          </td>
           <td><%= p.type %></td>
           <td><%= p.trainer %></td>
         </tr>

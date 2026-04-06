@@ -13,9 +13,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 const pokemonRoutes = require('./routes/pokemon');
-app.use('/pokemon', pokemonRoutes);
+const typeRoutes = require('./routes/type');
+const trainerRoutes = require('./routes/trainer');
 
-// Test route (homepage)
+app.use('/pokemon', pokemonRoutes);
+app.use('/types', typeRoutes);
+app.use('/trainers', trainerRoutes);
+
+// Redirect root to /pokemon
 app.get('/', (req, res) => res.redirect('/pokemon'));
 
 // Test DB route (remove later)

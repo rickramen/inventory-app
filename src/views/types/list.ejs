@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+
+<h1>Types</h1>
+<ul>
+  <% types.forEach(type => { %>
+    <li>
+      <a href="/types/<%= type.id %>"><%= type.name %></a>
+    </li>
+  <% }) %>
+</ul>
+
+<%- include('../partials/footer') %>

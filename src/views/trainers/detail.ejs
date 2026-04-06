@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+
+<h1><%= trainer.name %></h1>
+<h2>Pokémon Owned:</h2>
+<ul>
+  <% if (pokemonList.length === 0) { %>
+    <li>No Pokémon yet.</li>
+  <% } else { %>
+    <% pokemonList.forEach(p => { %>
+      <li>
+        <a href="/pokemon/<%= p.id %>"><%= p.name %></a>
+        (<%= p.type_name %>)
+      </li>
+    <% }) %>
+  <% } %>
+</ul>
+
+<%- include('../partials/footer') %>

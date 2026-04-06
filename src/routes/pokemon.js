@@ -3,5 +3,6 @@ const router = express.Router();
 const pokemonController = require('../controllers/pokemonController');
 
 router.get('/', pokemonController.list); 
+router.get('/:id', pokemonController.detail);
 
 module.exports = router;
