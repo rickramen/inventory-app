@@ -34,18 +34,13 @@ INSERT INTO trainers (name) VALUES
   ('May'), ('Dawn'), ('Cynthia')
 `;
 
-// Helpers
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 async function fetchPokemon(name) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
   const data = await res.json();
 
   return {
-    name: capitalize(data.name),
-    type: capitalize(data.types[0].type.name),
+    name: data.name,
+    type: data.types[0].type.name,
     image: data.sprites.front_default
   };
 }

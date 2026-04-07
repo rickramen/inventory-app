@@ -1,5 +1,7 @@
 <%- include("../partials/header") %>
 
+<% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+
 <h2>All Pokémon</h2>
 
 <table border="1" cellpadding="8" cellspacing="0">
@@ -25,10 +27,10 @@
             <% } %>
           </td>
           <td>
-            <a href="/pokemon/<%= p.id %>"><%= p.name %></a>
+            <a href="/pokemon/<%= p.id %>"><%= capitalize(p.name) %></a>
           </td>
-          <td><%= p.type %></td>
-          <td><%= p.trainer %></td>
+          <td><%= capitalize(p.type) %></td>
+          <td><%= capitalize(p.trainer) %></td>
         </tr>
       <% }) %>
     <% } %>

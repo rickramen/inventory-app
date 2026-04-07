@@ -1,6 +1,8 @@
 <%- include('../partials/header') %>
 
-<h1><%= pokemon.name %></h1>
+<% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+
+<h1><%= capitalize(pokemon.name) %></h1>
 
 <div>
   <% if (pokemon.image_url) { %>
@@ -8,8 +10,8 @@
   <% } %>
 </div>
 
-<p><strong>Type:</strong> <%= pokemon.type %></p>
-<p><strong>Trainer:</strong> <%= pokemon.trainer %></p>
+<p><strong>Type:</strong> <%= capitalize(pokemon.type) %></p>
+<p><strong>Trainer:</strong> <%= capitalize(pokemon.trainer) %></p>
 
 <a href="/pokemon">⬅ Back to list</a>
 

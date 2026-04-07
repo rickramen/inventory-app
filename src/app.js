@@ -4,6 +4,11 @@ const app = express();
 const pool = require('./db/pool'); 
 const path = require('path');
 
+// Routes
+const pokemonRoutes = require('./routes/pokemon');
+const typeRoutes = require('./routes/type');
+const trainerRoutes = require('./routes/trainer');
+
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
@@ -11,17 +16,14 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-const pokemonRoutes = require('./routes/pokemon');
-const typeRoutes = require('./routes/type');
-const trainerRoutes = require('./routes/trainer');
-
+// Route Mounting
 app.use('/pokemon', pokemonRoutes);
 app.use('/types', typeRoutes);
 app.use('/trainers', trainerRoutes);
 
 // Redirect root to /pokemon
 app.get('/', (req, res) => res.redirect('/pokemon'));
+
 
 // Test DB route (remove later)
 app.get('/test-db', async (req, res) => {
