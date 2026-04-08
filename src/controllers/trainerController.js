@@ -34,7 +34,11 @@ exports.detail = async (req, res) => {
 };
 
 exports.createGet = (req, res) => {
-  res.render('trainers/form', { trainer: null, error: null });
+  res.render('trainers/form', { 
+    trainer: null, 
+    error: null, 
+    isUpdate: false
+  });
 };
 
 exports.createPost = async (req, res) => {
@@ -43,7 +47,8 @@ exports.createPost = async (req, res) => {
   if (!name) {
     return res.render('trainers/form', {
       trainer: { name },
-      error: 'Trainer name is required'
+      error: 'Trainer name is required',
+      isUpdate: false   
     });
   }
 
@@ -60,5 +65,57 @@ exports.createPost = async (req, res) => {
       trainer: { name },
       error: 'Failed to create trainer'
     });
+  }
+};
+
+exports.updateGet = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const result = await pool.query('SELECT * FROM trainers WHERE id = $1', [id]);
+    if (result.rows.length === 0) return res.status(404).send('Trainer not found');
+
+    res.render('trainers/form', {
+      trainer: result.rows[0],
+      error: null,
+      isUpdate: true
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database error');
+  }
+};
+
+exports.updatePost = async (req, res) => {
+  const id = req.params.id;
+  const { name } = req.body;
+
+  if (!name) return res.send('Trainer name is required');
+
+  try {
+    await pool.query('UPDATE trainers SET name = $1 WHERE id = $2', [name, id]);
+    res.redirect(`/trainers/${id}`);  // redirect to trainer detail page
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database error');
+  }
+};
+
+
+exports.deletePost = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Reassign trainers pokemon to null before delete
+    await pool.query('UPDATE pokemon SET trainer_id = NULL WHERE trainer_id = $1', [id]);
+
+    // Delete trainer
+    const result = await pool.query('DELETE FROM trainers WHERE id = $1 RETURNING *', [id]);
+    if (result.rows.length === 0) return res.status(404).send('Trainer not found');
+
+    res.redirect('/trainers');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database error');
   }
 };

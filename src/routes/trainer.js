@@ -6,6 +6,13 @@ const trainerController = require('../controllers/trainerController');
 router.get('/new', trainerController.createGet);
 router.post('/new', trainerController.createPost);
 
+// UPDATE
+router.get('/:id/edit', trainerController.updateGet);
+router.post('/:id/edit', trainerController.updatePost);
+
+// DELETE
+router.post('/:id/delete', trainerController.deletePost);
+
 // READ
 router.get('/', trainerController.list);
 router.get('/:id', trainerController.detail);

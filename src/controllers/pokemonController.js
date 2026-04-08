@@ -5,7 +5,7 @@ const pool = require('../db/pool');
 exports.list = async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT p.id, p.name, p.image_url, t.name AS type, tr.name AS trainer
+      SELECT p.id, p.name, p.image_url, t.name AS type, COALESCE(tr.name, 'No Trainer') AS trainer
       FROM pokemon p
       LEFT JOIN types t ON p.type_id = t.id
       LEFT JOIN trainers tr ON p.trainer_id = tr.id
@@ -26,7 +26,7 @@ exports.detail = async (req, res) => {
     const result = await pool.query(
       `SELECT p.id, p.name, p.image_url,
               t.name AS type,
-              tr.name AS trainer
+              COALESCE(tr.name, 'No Trainer') AS trainer
        FROM pokemon p
        LEFT JOIN types t ON p.type_id = t.id
        LEFT JOIN trainers tr ON p.trainer_id = tr.id
@@ -52,8 +52,9 @@ exports.createGet = async (req, res) => {
 
     res.render('pokemon/form', {
       pokemon: null,        // empty form for new Pokémon
-      trainers: trainers.rows,
-      error: null           // for validation messages
+      trainers: trainers.rows,  // fetch trainers for dropdown
+      error: null,           // for validation
+      isUpdate: false 
     });
   } catch (err) {
     console.error(err);
@@ -67,12 +68,23 @@ exports.createPost = async (req, res) => {
   const trainers = (await pool.query('SELECT * FROM trainers')).rows;
 
   // Validate input
-  if (!name) {
-    return res.render('pokemon/form', { pokemon: { name, trainer_id: trainerIdInt }, trainers, error: 'Name is required' });
-  }
-  if (!trainer_id || isNaN(trainerIdInt)) {
-    return res.render('pokemon/form', { pokemon: { name }, trainers, error: 'You must assign a trainer' });
-  }
+if (!name) {
+  return res.render('pokemon/form', { 
+    pokemon: { name, trainer_id: trainerIdInt }, 
+    trainers, 
+    error: 'Name is required',
+    isUpdate: false         
+  });
+}
+
+if (!trainer_id || isNaN(trainerIdInt)) {
+  return res.render('pokemon/form', { 
+    pokemon: { name }, 
+    trainers, 
+    error: 'You must assign a trainer',
+    isUpdate: false         
+  });
+}
 
   // Fetch PokéAPI
   let pokeData;
@@ -89,16 +101,16 @@ exports.createPost = async (req, res) => {
       type: typeName,
       image: data.sprites.front_default || null
     };
-    console.log('Normalized Pokémon data:', pokeData);
   } catch (err) {
     return res.render('pokemon/form', { pokemon: { name, trainer_id: trainerIdInt }, trainers, error: 'Failed to fetch Pokemon data from PokeAPI' });
   }
 
-  // Insert into DB
+  // Insert pokemon into DB
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-
+    
+    // Upsert type and return type_id
     const typeResult = await client.query(
       `INSERT INTO types (name)
        VALUES ($1)
@@ -117,22 +129,73 @@ exports.createPost = async (req, res) => {
     await client.query('COMMIT');
     res.redirect('/pokemon');
   } catch (err) {
-    await client.query('ROLLBACK');
-    console.error(err);
+      await client.query('ROLLBACK');
+      console.error(err);
     return res.render('pokemon/form', { pokemon: { name, trainer_id: trainerIdInt }, trainers, error: 'Database error' });
   } finally {
-    client.release();
+      client.release();
   }
 };
 
-exports.updateGet = (req, res) => {
-  res.send('Update');
+exports.updateGet = async (req, res) => {
+  const id = req.params.id;
+  try {
+    // Fetch the Pokémon and trainers
+    const pokemonResult = await pool.query('SELECT * FROM pokemon WHERE id = $1', [id]);
+    const trainersResult = await pool.query('SELECT * FROM trainers');
+
+    if (pokemonResult.rows.length === 0) {
+      return res.status(404).send('Pokemon not found');
+    }
+
+    res.render('pokemon/form', {
+      pokemon: pokemonResult.rows[0], // pre-fill form
+      trainers: trainersResult.rows,
+      error: null,
+      isUpdate: true  // new flag for the template
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database error');
+  }
 };
 
-exports.updatePost = (req, res) => {
-  res.send('Update');
+exports.updatePost = async (req, res) => {
+  const id = req.params.id;
+  const {trainer_id } = req.body;
+  const trainerIdInt = parseInt(trainer_id, 10);
+
+  // Validate input
+  if (!trainer_id || isNaN(trainerIdInt)) return res.send('Trainer is required');
+
+  try {
+    // Update the Pokémon
+    await pool.query(
+      `UPDATE pokemon
+       SET trainer_id = $1
+       WHERE id = $2`,
+      [trainerIdInt, id]
+    );
+    res.redirect(`/pokemon/${id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database error');
+  }
 };
 
-exports.deletePost = (req, res) => {
-  res.send('Delete');
+exports.deletePost = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const result = await pool.query('DELETE FROM pokemon WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).send('Pokemon not found');
+    }
+
+    res.redirect('/pokemon'); // back to the list
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database error');
+  }
 };

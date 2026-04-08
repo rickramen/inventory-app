@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const pool = require('./db/pool'); 
 const path = require('path');
 
 // Routes

@@ -1,8 +1,10 @@
 <%- include("../partials/header") %>
 
-<% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+<% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
 <h2>All Pokémon</h2>
+
+<a href="/pokemon/new">Add Pokémon</a>
 
 <table border="1" cellpadding="8" cellspacing="0">
   <thead>
@@ -11,12 +13,13 @@
       <th>Name</th>
       <th>Type</th>
       <th>Trainer</th>
+      <th>Actions</th> <!-- New column for buttons -->
     </tr>
   </thead>
   <tbody>
     <% if (!pokemon || pokemon.length === 0) { %>
       <tr>
-        <td colspan="4">No Pokémon found.</td>
+        <td colspan="5">No Pokémon found.</td>
       </tr>
     <% } else { %>
       <% pokemon.forEach(p => { %>
@@ -31,6 +34,17 @@
           </td>
           <td><%= capitalize(p.type) %></td>
           <td><%= capitalize(p.trainer) %></td>
+          <td>
+            <!-- Update button -->
+            <form method="GET" action="/pokemon/<%= p.id %>/edit" style="display:inline;">
+              <button type="submit">Update</button>
+            </form>
+            <!-- Delete button -->
+            <form method="POST" action="/pokemon/<%= p.id %>/delete" style="display:inline;"
+                  onsubmit="return confirm('Are you sure you want to delete <%= capitalize(p.name) %>?');">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
         </tr>
       <% }) %>
     <% } %>
