@@ -32,3 +32,33 @@ exports.detail = async (req, res) => {
     res.status(500).send('Database error');
   }
 };
+
+exports.createGet = (req, res) => {
+  res.render('trainers/form', { trainer: null, error: null });
+};
+
+exports.createPost = async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.render('trainers/form', {
+      trainer: { name },
+      error: 'Trainer name is required'
+    });
+  }
+
+  try {
+    await pool.query(
+      'INSERT INTO trainers (name) VALUES ($1)',
+      [name.trim()]
+    );
+
+    res.redirect('/trainers');
+  } catch (err) {
+    console.error(err);
+    res.render('trainers/form', {
+      trainer: { name },
+      error: 'Failed to create trainer'
+    });
+  }
+};

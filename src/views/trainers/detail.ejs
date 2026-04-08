@@ -1,5 +1,7 @@
 <%- include('../partials/header') %>
 
+<% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+
 <h1><%= trainer.name %></h1>
 <h2>Pokémon Owned:</h2>
 <ul>
@@ -8,8 +10,8 @@
   <% } else { %>
     <% pokemonList.forEach(p => { %>
       <li>
-        <a href="/pokemon/<%= p.id %>"><%= p.name %></a>
-        (<%= p.type_name %>)
+        <a href="/pokemon/<%= p.id %>"><%= capitalize(p.name) %></a>
+        (<%= capitalize(p.type_name) %>)
       </li>
     <% }) %>
   <% } %>

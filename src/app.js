@@ -24,18 +24,6 @@ app.use('/trainers', trainerRoutes);
 // Redirect root to /pokemon
 app.get('/', (req, res) => res.redirect('/pokemon'));
 
-
-// Test DB route (remove later)
-app.get('/test-db', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ time: result.rows[0] });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Database error');
-  }
-});
-
 // 404 handler
 app.use((req, res) => {
   res.status(404).send('Page not found');
