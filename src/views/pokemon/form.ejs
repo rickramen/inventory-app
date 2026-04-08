@@ -1,3 +1,5 @@
+<%- include('../partials/header') %>
+
 <h1><%= isUpdate ? 'Update Pokémon' : 'Create Pokémon' %></h1>
 
 <% if (error) { %>
@@ -10,17 +12,21 @@
     <input type="text" id="name" name="name" value="<%= pokemon ? pokemon.name : '' %>" <%= isUpdate ? 'readonly' : '' %>>
   </div>
 
-  <div>
-    <label for="trainer_id">Trainer:</label>
-    <select id="trainer_id" name="trainer_id">
-      <option value="">-- None --</option>
-      <% trainers.forEach(trainer => { %>
-        <option value="<%= trainer.id %>" <%= pokemon && trainer.id === pokemon.trainer_id ? 'selected' : '' %>><%= trainer.name %></option>
-      <% }) %>
-    </select>
-  </div>
+<div>
+  <label for="trainer_id">Trainer:</label>
+  <select id="trainer_id" name="trainer_id" required>
+    <option value="" disabled selected>Assign New Trainer</option>
+    <% trainers.forEach(trainer => { %>
+      <option value="<%= trainer.id %>" <%= pokemon && trainer.id === pokemon.trainer_id ? 'selected' : '' %>>
+        <%= trainer.name %>
+      </option>
+    <% }) %>
+  </select>
+</div>
 
   <button type="submit"><%= isUpdate ? 'Update Pokémon' : 'Add Pokémon' %></button>
 </form>
 
 <a href="/pokemon">Back to list</a>
+
+<%- include('../partials/footer') %>

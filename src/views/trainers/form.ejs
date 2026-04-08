@@ -1,3 +1,5 @@
+<%- include('../partials/header') %>
+
 <h1><%= isUpdate ? 'Update Trainer' : 'Create Trainer' %></h1>
 
 <% if (error) { %>
@@ -19,3 +21,5 @@
 </form>
 
 <a href="/trainers">Back to list</a>
+
+<%- include('../partials/footer') %>
