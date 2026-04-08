@@ -3,10 +3,10 @@
 <% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
 
 <h1><%= trainer.name %></h1>
-<h2>Pokémon Owned:</h2>
+<h2>Pokemon Owned:</h2>
 <ul>
   <% if (pokemonList.length === 0) { %>
-    <li>No Pokémon yet.</li>
+    <li>No Pokemon for type in inventory.</li>
   <% } else { %>
     <% pokemonList.forEach(p => { %>
       <li>

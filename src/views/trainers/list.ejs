@@ -1,15 +1,32 @@
 <%- include('../partials/header') %>
 
-<h1>Trainers</h1>
+<% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
-<a href="/trainers/new">Add Trainer</a>
+<h2>All Trainers</h2>
 
-<ul>
-  <% trainers.forEach(trainer => { %>
-    <li>
-      <a href="/trainers/<%= trainer.id %>"><%= trainer.name %></a>
-    </li>
-  <% }) %>
-</ul>
+<a href="/trainers/new" class="button-link">Add Trainer</a>
+
+<% if (!trainers || trainers.length === 0) { %>
+  <p>No trainers found.</p>
+<% } else { %>
+  <div class="card-grid">
+    <% trainers.forEach(trainer => { %>
+      <div class="card">
+        <h3><a href="/trainers/<%= trainer.id %>"><%= capitalize(trainer.name) %></a></h3>
+        <div class="card-actions">
+          <!-- Update button -->
+          <form method="GET" action="/trainers/<%= trainer.id %>/edit" style="display:inline;">
+            <button type="submit">Update</button>
+          </form>
+          <!-- Delete button -->
+          <form method="POST" action="/trainers/<%= trainer.id %>/delete" style="display:inline;"
+                onsubmit="return confirm('Are you sure you want to delete <%= capitalize(trainer.name) %>?');">
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
 
 <%- include('../partials/footer') %>

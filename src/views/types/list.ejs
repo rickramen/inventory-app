@@ -1,14 +1,19 @@
 <%- include('../partials/header') %>
 
-<% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+<% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
-<h1>Types</h1>
-<ul>
-  <% types.forEach(type => { %>
-    <li>
-      <a href="/types/<%= type.id %>"><%= capitalize(type.name) %></a>
-    </li>
-  <% }) %>
-</ul>
+<h2>All Types</h2>
+
+<% if (!types || types.length === 0) { %>
+  <p>No types found.</p>
+<% } else { %>
+  <div class="card-grid">
+    <% types.forEach(type => { %>
+      <div class="card">
+        <h3><a href="/types/<%= type.id %>"><%= capitalize(type.name) %></a></h3>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
 
 <%- include('../partials/footer') %>

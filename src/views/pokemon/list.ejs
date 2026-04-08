@@ -4,51 +4,34 @@
 
 <h2>All Pokémon</h2>
 
-<a href="/pokemon/new">Add Pokémon</a>
+<a href="/pokemon/new" class="button-link">Add Pokémon</a>
 
-<table border="1" cellpadding="8" cellspacing="0">
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Trainer</th>
-      <th>Actions</th> <!-- New column for buttons -->
-    </tr>
-  </thead>
-  <tbody>
-    <% if (!pokemon || pokemon.length === 0) { %>
-      <tr>
-        <td colspan="5">No Pokémon found.</td>
-      </tr>
-    <% } else { %>
-      <% pokemon.forEach(p => { %>
-        <tr>
-          <td>
-            <% if (p.image_url) { %>
-              <img src="<%= p.image_url %>" width="50">
-            <% } %>
-          </td>
-          <td>
-            <a href="/pokemon/<%= p.id %>"><%= capitalize(p.name) %></a>
-          </td>
-          <td><%= capitalize(p.type) %></td>
-          <td><%= capitalize(p.trainer) %></td>
-          <td>
-            <!-- Update button -->
-            <form method="GET" action="/pokemon/<%= p.id %>/edit" style="display:inline;">
-              <button type="submit">Update</button>
-            </form>
-            <!-- Delete button -->
-            <form method="POST" action="/pokemon/<%= p.id %>/delete" style="display:inline;"
-                  onsubmit="return confirm('Are you sure you want to delete <%= capitalize(p.name) %>?');">
-              <button type="submit">Delete</button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    <% } %>
-  </tbody>
-</table>
+<% if (!pokemon || pokemon.length === 0) { %>
+  <p>No Pokémon found.</p>
+<% } else { %>
+  <div class="card-grid">
+    <% pokemon.forEach(p => { %>
+      <div class="card">
+        <% if (p.image_url) { %>
+          <img src="<%= p.image_url %>" alt="<%= p.name %>">
+        <% } %>
+        <h3><a href="/pokemon/<%= p.id %>"><%= capitalize(p.name) %></a></h3>
+        <p>Type: <%= capitalize(p.type) %></p>
+        <p>Trainer: <%= capitalize(p.trainer) %></p>
+        <div class="card-actions">
+          <!-- Update button -->
+          <form method="GET" action="/pokemon/<%= p.id %>/edit" style="display:inline;">
+            <button type="submit">Update</button>
+          </form>
+          <!-- Delete button -->
+          <form method="POST" action="/pokemon/<%= p.id %>/delete" style="display:inline;"
+                onsubmit="return confirm('Are you sure you want to delete <%= capitalize(p.name) %>?');">
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
 
 <%- include("../partials/footer") %>

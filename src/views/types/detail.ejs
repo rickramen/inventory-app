@@ -1,25 +1,26 @@
 <%- include('../partials/header') %>
 
-<% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
+<% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
 <h1><%= capitalize(type.name) %> Type</h1>
 <h2>Pokémon:</h2>
-<div class="pokemon-grid">
-  <% pokemonList.forEach(p => { %>
-    <div class="pokemon-card">
-      <% if (p.image_url) { %>
-        <img src="<%= p.image_url %>" width="80">
-      <% } %>
 
-      <a href="/pokemon/<%= p.id %>">
-        <%= capitalize(p.name) %>
-      </a>
-
-      <% if (p.trainer_name) { %>
-        <div>Trainer: <%= p.trainer_name %></div>
-      <% } %>
-    </div>
-  <% }) %>
-</div>
+<% if (!pokemonList || pokemonList.length === 0) { %>
+  <p>No Pokémon available.</p>
+<% } else { %>
+  <div class="card-grid">
+    <% pokemonList.forEach(p => { %>
+      <div class="card">
+        <% if (p.image_url) { %>
+          <img src="<%= p.image_url %>" alt="<%= p.name %>">
+        <% } %>
+        <h3><a href="/pokemon/<%= p.id %>"><%= capitalize(p.name) %></a></h3>
+        <% if (p.trainer_name) { %>
+          <p>Trainer: <%= capitalize(p.trainer_name) %></p>
+        <% } %>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
 
 <%- include('../partials/footer') %>
