@@ -3,13 +3,15 @@
 ## The Odin Project - NodeJS Course Project 
 A CRUD application built with Express, NodeJS, EJS, and PostgreSQL database.
 
+![App Preview](assets/preview.png)
+
 ## Pre-requisites (LocaL)
 - Node v22+, Docker
 
 1. Clone the repository:
 ```bash
    git clone https://github.com/rickramen/inventory-app.git
-   cd <inventory-app>
+   cd inventory-app
 ```
 2. Install dependencies and start DB container
 ```bash
