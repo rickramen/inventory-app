@@ -5,7 +5,7 @@ A CRUD application built with Express, NodeJS, EJS, and PostgreSQL database.
 
 ![App Preview](assets/preview.png)
 
-## Pre-requisites (LocaL)
+## Pre-requisites (Local Deployment)
 - Node v22+, Docker
 
 1. Clone the repository:
