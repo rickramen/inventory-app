@@ -2,17 +2,25 @@
 
 <% function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); } %>
 
-<h1><%= capitalize(pokemon.name) %></h1>
+<div class="detail-container">
+  <h1><%= capitalize(pokemon.name) %></h1>
 
-<div>
   <% if (pokemon.image_url) { %>
-    <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" width="150">
+    <img src="<%= pokemon.image_url %>" alt="<%= pokemon.name %>" class="detail-image">
   <% } %>
+
+  <p><strong>Type:</strong> <%= capitalize(pokemon.type) %></p>
+  <p><strong>Trainer:</strong> 
+    <% if (pokemon.trainer && pokemon.trainer !== 'No Trainer') { %>
+      <a href="/trainers/<%= pokemon.trainer_id %>"><%= capitalize(pokemon.trainer) %></a>
+    <% } else { %>
+      None
+    <% } %>
+  </p>
+
+  <div class="back-link">
+    <a href="/pokemon">⬅ Back to Pokémon</a>
+  </div>
 </div>
-
-<p><strong>Type:</strong> <%= capitalize(pokemon.type) %></p>
-<p><strong>Trainer:</strong> <%= capitalize(pokemon.trainer) %></p>
-
-<a href="/pokemon">⬅ Back to list</a>
 
 <%- include('../partials/footer') %>

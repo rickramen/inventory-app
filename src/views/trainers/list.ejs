@@ -2,9 +2,10 @@
 
 <% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
-<h2>All Trainers</h2>
-
-<a href="/trainers/new" class="button-link">Add Trainer</a>
+<div class="list-header">
+  <h2>All Trainers</h2>
+  <a href="/trainers/new" class="button-link">Add Trainer</a>
+</div>
 
 <% if (!trainers || trainers.length === 0) { %>
   <p>No trainers found.</p>

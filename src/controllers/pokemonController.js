@@ -26,11 +26,12 @@ exports.detail = async (req, res) => {
     const result = await pool.query(
       `SELECT p.id, p.name, p.image_url,
               t.name AS type,
+              tr.id AS trainer_id,
               COALESCE(tr.name, 'No Trainer') AS trainer
-       FROM pokemon p
-       LEFT JOIN types t ON p.type_id = t.id
-       LEFT JOIN trainers tr ON p.trainer_id = tr.id
-       WHERE p.id = $1`,
+      FROM pokemon p
+      LEFT JOIN types t ON p.type_id = t.id
+      LEFT JOIN trainers tr ON p.trainer_id = tr.id
+      WHERE p.id = $1`,
       [id]
     );
 

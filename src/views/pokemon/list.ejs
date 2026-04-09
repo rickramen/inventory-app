@@ -2,9 +2,10 @@
 
 <% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
-<h2>All Pokémon</h2>
-
-<a href="/pokemon/new" class="button-link">Add Pokémon</a>
+<div class="list-header">
+  <h2>All Pokémon</h2>
+  <a href="/pokemon/new" class="button-link">Add Pokémon</a>
+</div>
 
 <% if (!pokemon || pokemon.length === 0) { %>
   <p>No Pokémon found.</p>
@@ -15,7 +16,7 @@
         <% if (p.image_url) { %>
           <img src="<%= p.image_url %>" alt="<%= p.name %>">
         <% } %>
-        <h3><a href="/pokemon/<%= p.id %>"><%= capitalize(p.name) %></a></h3>
+        <h3><a href="/pokemon/<%= p.id %>"><strong><%= capitalize(p.name) %></strong></a></h3>
         <p>Type: <%= capitalize(p.type) %></p>
         <p>Trainer: <%= capitalize(p.trainer) %></p>
         <div class="card-actions">

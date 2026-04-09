@@ -1,25 +1,30 @@
 <%- include('../partials/header') %>
 
-<h1><%= isUpdate ? 'Update Trainer' : 'Create Trainer' %></h1>
+<div class="form-container">
+  <h1><%= isUpdate ? 'Update Trainer' : 'Create Trainer' %></h1>
 
-<% if (error) { %>
-  <p style="color:red"><%= error %></p>
-<% } %>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
 
-<form method="POST" action="<%= isUpdate ? `/trainers/${trainer.id}/edit` : '/trainers/new' %>">
-  <div>
-    <label for="name">Trainer Name:</label>
-    <input 
-      type="text" 
-      id="name" name="name" 
-      value="<%= trainer ? trainer.name : '' %>" 
-      required
-    >
+  <form method="POST" action="<%= isUpdate ? `/trainers/${trainer.id}/edit` : '/trainers/new' %>">
+    <div class="form-group">
+      <label for="name">Trainer Name:</label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name" 
+        value="<%= trainer ? trainer.name : '' %>" 
+        required
+      >
+    </div>
+
+    <button type="submit"><%= isUpdate ? 'Update Trainer' : 'Add Trainer' %></button>
+  </form>
+
+  <div class="back-link">
+    <a href="/trainers">⬅ Back to list</a>
   </div>
-
-  <button type="submit"><%= isUpdate ? 'Update Trainer' : 'Add Trainer' %></button>
-</form>
-
-<a href="/trainers">Back to list</a>
+</div>
 
 <%- include('../partials/footer') %>
