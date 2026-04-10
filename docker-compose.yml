@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:17
-    container_name: inventory-db
     env_file:
       - .env
     environment:

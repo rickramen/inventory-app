@@ -50,7 +50,8 @@ async function insertPokemon(client, pokemon, trainerName) {
   const typeResult = await client.query(
     `INSERT INTO types (name)
      VALUES ($1)
-     ON CONFLICT (name) DO NOTHING
+     ON CONFLICT (name)
+     DO UPDATE SET name = EXCLUDED.name
      RETURNING id`,
     [pokemon.type]
   );

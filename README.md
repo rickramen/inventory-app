@@ -21,17 +21,18 @@ A CRUD application built with Express, NodeJS, EJS, and PostgreSQL database.
 3. Set up env variables
 ```
 # .env
-NODE_ENV 
+NODE_ENV=
+COMPOSE_PROJECT_NAME=
 
 # Production
-DATABASE_URL
+DATABASE_URL=
 
 # Development
-DB_USER
-DB_PASSWORD
-DB_HOST
-DB_NAME
-DB_PORT
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_NAME=
+DB_PORT=
 
 ```
 4. Run db script for dummy data
