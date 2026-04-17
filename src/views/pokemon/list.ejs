@@ -3,12 +3,12 @@
 <% function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : ''; } %>
 
 <div class="list-header">
-  <h2>All Pokémon</h2>
-  <a href="/pokemon/new" class="button-link">Add Pokémon</a>
+  <h2>All Pokemon</h2>
+  <a href="/pokemon/new" class="button-link">Add Pokemon</a>
 </div>
 
 <% if (!pokemon || pokemon.length === 0) { %>
-  <p>No Pokémon found.</p>
+  <p>No Pokemon found.</p>
 <% } else { %>
   <div class="card-grid">
     <% pokemon.forEach(p => { %>
