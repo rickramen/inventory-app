@@ -18,23 +18,8 @@ A CRUD application built with Express, NodeJS, EJS, and PostgreSQL database.
    npm install
    docker-compose up -d
 ```
-3. Set up env variables
-```
-# .env
-NODE_ENV=
-COMPOSE_PROJECT_NAME=
+3. Set up .env file
 
-# Production
-DATABASE_URL=
-
-# Development
-DB_USER=
-DB_PASSWORD=
-DB_HOST=
-DB_NAME=
-DB_PORT=
-
-```
 4. Run db script for dummy data
 ```bash
 npm run seed
